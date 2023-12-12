@@ -180,7 +180,8 @@ export class CanvasRenderer extends Renderer {
 
         this.ctx.direction = styles.direction === DIRECTION.RTL ? 'rtl' : 'ltr';
         this.ctx.textAlign = 'left';
-        this.ctx.textBaseline = 'alphabetic';
+        // this.ctx.textBaseline = 'alphabetic';
+        this.ctx.textBaseline = 'ideographic';
         const {baseline, middle} = this.fontMetrics.getMetrics(fontFamily, fontSize);
         const paintOrder = styles.paintOrder;
 
@@ -214,6 +215,8 @@ export class CanvasRenderer extends Renderer {
                         if (styles.textDecorationLine.length) {
                             this.ctx.fillStyle = asString(styles.textDecorationColor || styles.color);
                             styles.textDecorationLine.forEach((textDecorationLine) => {
+                                let lineHeight = parseFloat(fontSize) / 10;
+                                lineHeight = lineHeight > 1 ? lineHeight : 1;
                                 switch (textDecorationLine) {
                                     case TEXT_DECORATION_LINE.UNDERLINE:
                                         // Draws a line at the baseline of the font
@@ -223,7 +226,8 @@ export class CanvasRenderer extends Renderer {
                                             text.bounds.left,
                                             Math.round(text.bounds.top + baseline),
                                             text.bounds.width,
-                                            1
+                                            // 1
+                                            lineHeight
                                         );
 
                                         break;
@@ -239,9 +243,10 @@ export class CanvasRenderer extends Renderer {
                                         // TODO try and find exact position for line-through
                                         this.ctx.fillRect(
                                             text.bounds.left,
-                                            Math.ceil(text.bounds.top + middle),
+                                            Math.ceil(text.bounds.top + middle - lineHeight),
                                             text.bounds.width,
-                                            1
+                                            // 1
+                                            lineHeight
                                         );
                                         break;
                                 }
